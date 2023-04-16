@@ -1,0 +1,29 @@
+#mes {
+    display: grid;
+    grid-template-columns: repeat(7, auto );
+    text-align: center;
+}
+
+.marco {
+    font-weight: bold;
+    background-color: gray;
+}
+
+.nacionales{
+    background-color: yellow;
+}
+
+.comunidad{
+    background-color: cyan;
+}
+
+.local {
+    background-color: orange;
+}
+#actual {
+    background-color: green;
+}
+
+.finde {
+    background-color: red;
+}

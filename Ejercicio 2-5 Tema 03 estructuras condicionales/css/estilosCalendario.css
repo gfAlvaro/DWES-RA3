@@ -1,0 +1,38 @@
+#mes{
+    display: grid;
+    grid-template-columns: repeat(7, auto );
+    text-align: center;
+    margin-left: 40%;
+    margin-right: 40%;
+}
+
+.dia {
+    border: 1px solid black;
+    margin: 0.1em;
+}
+
+.marco {
+    font-weight: bold;
+    background-color: lightgray;
+}
+
+.nacional {
+    background-color: yellow;
+}
+
+.comunidad {
+    background-color: cyan;
+}
+
+.local {
+    background-color: orange;
+}
+
+.finde {
+    background-color: red;
+}
+
+#actual {
+    background-color: yellowgreen;
+    border-radius: 100%;
+}
