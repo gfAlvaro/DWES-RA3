@@ -1,4 +1,8 @@
 <?php
+/**
+ * Archivo de configuración
+ * @author Álvaro García Fuentes
+ */
     $tarifas = [ 'Picapiedras' => [ 'A' => 40, 'B' => 30, 'C' => 20, 'D' => 10 ],
                  'Roedores'    => [ 'A' => 45, 'B' => 35, 'C' => 25, 'D' => 15 ],
                  'Perezosos'   => [ 'A' => 35, 'B' => 25, 'C' => 15, 'D' =>  5 ],
