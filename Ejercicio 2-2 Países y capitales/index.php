@@ -51,7 +51,7 @@
             $sopa[$i][$j] = $letras[ rand(0, $numeroLetras - 1) ];
 
     $filasSopa = count( $sopa );
-    $columnasSopa = count( $sopa[$filasSopa-1] );
+    $columnasSopa = $filasSopa;
 
     // selecciona capitales para introducir en la sopa
     $capitales = array_values( $paises );
@@ -64,76 +64,50 @@
 
     // introduce capitales en la sopa
     $insertadas = [];
+    $tablaIncrementos = [  [ 'x' => 0,  'y' => -1 ],
+                           [ 'x' => 0,  'y' => 1  ],
+                           [ 'x' => 1,  'y' => -1 ],
+                           [ 'x' => 1,  'y' => 0  ],
+                           [ 'x' => 1,  'y' => 1  ],
+                           [ 'x' => -1, 'y' => -1 ],
+                           [ 'x' => -1, 'y' => 0  ],
+                           [ 'x' => -1, 'y' => 1  ]  ];
     while( count( $capitalesSeleccionadas ) > 0 ){
 
-        $horizontal =  rand( 0 , 1 ) == 1;
-        //$invertido =  rand( 0 , 1 ) == 1;
-
-        // coordenadas donde se inicia la escritura de la capital
+        $incremento = rand( 0, 7 );
         $i = rand( 0, $filasSopa - 1 );
         $j = rand( 0, $columnasSopa - 1 );
         $capitalSeleccionada = strToUpper( end( $capitalesSeleccionadas )  );
         $longitudCapital = strlen( $capitalSeleccionada );
 
-        if( $horizontal ){
-            // comprobar que hay espacio suficiente para introducir la capital
-            // desde la casilla seleccionada
-            if( $longitudCapital <= $columnasSopa - $j){
-                //comprobar que la línea no está ocupada por otra capital
-                $casillaLineaLibre = true;
-                $indiceCadena = 0;
-                for( $l = $j; $l < $longitudCapital + $j; $l++ ){
-                    if(  isset( $insertadas[$i][$l] ) && $insertadas[$i][$l] != $capitalSeleccionada[$indiceCadena]  ){
-                        $casillaLineaLibre = false;
-                        break;
-                    }
-                    $indiceCadena++;
-                }
-
-                // insertar capital en la sopa
-                if( $casillaLineaLibre ){
-                    $indice = 0;
-                    for( $l = $j; $l < $longitudCapital + $j; $l++ ){
-                        //insertar en sopa
-                        $sopa[$i][$l] = $capitalSeleccionada[$indice];
-                        //añadir al array de insertadas para futuras comprobaciones
-                        $insertadas[$i][$l] = $sopa[$i][$l];
-                        $indice++;
-                    }
-                    array_pop( $capitalesSeleccionadas );
-                }
+        // comprobar que hay espacio suficiente para introducir la capital
+        // desde la casilla seleccionada
+        // y cada casilla a escribir no está ocupcada por una letra de capital distinta
+        $casillaLineaLibre = true;
+        for( $k = $i, $l = $j, $indice = 0;
+        $k < $filasSopa && $k >= 0 && $l < $columnasSopa && $l >= 0 && $indice < $longitudCapital;
+        $k += $tablaIncrementos[$incremento]['x'], $l += $tablaIncrementos[$incremento]['y'], $indice++ ){
+            if( ( ( $k == 0 || $l == 0 || $k == $filasSopa-1 || $l == $columnasSopa-1 )
+            && $indice < $longitudCapital-1 )
+            || ( isset( $insertadas[$k][$l] ) && $insertadas[$k][$l] != $capitalSeleccionada[$indice] )  ){
+                $casillaLineaLibre = false;
+                break;
             }
-        } else
-            // comprobar que hay espacio suficiente para introducir la capital
-            // desde la casilla seleccionada
-            if( $longitudCapital <= $filasSopa - $i ){
-                //comprobar que la línea no está ocupada por otra capital
-                $casillaLineaLibre = true;
-                $indiceCadena = 0;
-                for( $k = $i; $k < $longitudCapital + $i; $k++ ){
-                    if(  isset( $insertadas[$k][$j] ) && $insertadas[$k][$j] != $capitalSeleccionada[$indiceCadena]  ){
-                        $casillaLineaLibre = false;
-                        break;
-                    }
-                    $indiceCadena++;
-                }
+        }
 
-                // insertar capital en la sopa
-                if( $casillaLineaLibre ){
-                    $indice = 0;
-                    for( $k = $i; $k < $longitudCapital + $i; $k++ ){
-                        //insertar en sopa
-                        $sopa[$k][$j] = $capitalSeleccionada[$indice];
-                        //añadir al array de insertadas para futuras comprobaciones
-                        $insertadas[$k][$j] = $sopa[$k][$j];
-                        $indice++;
-                    }
-                    array_pop( $capitalesSeleccionadas );
-                }
+        // insertar capital en la sopa
+        if( $casillaLineaLibre ){
+            for( $k = $i, $l = $j, $indice = 0;
+            $k < $filasSopa && $k >= 0 && $l < $columnasSopa && $l >= 0 && $indice < $longitudCapital;
+            $k += $tablaIncrementos[$incremento]['x'], $l += $tablaIncrementos[$incremento]['y'], $indice++ ){
+                //insertar en sopa
+                $sopa[$k][$l] = $capitalSeleccionada[$indice];
+                //añadir al array de insertadas para futuras comprobaciones
+                $insertadas[$k][$l] = $sopa[$k][$l];
             }
-
+            array_pop( $capitalesSeleccionadas );
+        }
     }
-
 ?>
 <!DOCTYPE html>
 <html lang="ES">
@@ -166,7 +140,7 @@
                 for( $i = 0; $i < $filasSopa; $i++ ){
                     echo "<tr>";
                     for( $j = 0; $j < $columnasSopa; $j++ )
-                        echo "<td".(isset( $insertadas[$i][$j] ) && $sopa[$i][$j] == $insertadas[$i][$j]?
+                        echo "<td".( isset($insertadas[$i][$j]) && $sopa[$i][$j] == $insertadas[$i][$j]?
                                      " style='color:red'" : "").">".$sopa[$i][$j]."</td>";
                     echo "</tr>";
                 }
